@@ -1,12 +1,18 @@
 <script lang="ts">
   import { type Snippet, tick } from "svelte";
-  import { CancelCircleIcon, css } from "../css.svelte";
+  import { CancelCircleIcon, css, type Value } from "../css.svelte";
+
+  const STATUS_OPEN = "==== OPEN ====";
 
   let {
-    status = $bindable("ready"),
-    caption = "untitled",
+    caption,
     children,
-  }: { status?: string; caption?: string; children?: Snippet<[]> } = $props();
+  }: {
+    caption?: string | Snippet<[]>;
+    children?: Snippet<[]>;
+  } = $props();
+
+  let status = $state<Value>(undefined);
 
   let x = $state(100);
   let y = $state(100);
@@ -49,7 +55,7 @@
   // svelte-ignore non_reactive_update
   let dialog: HTMLDivElement;
   $effect(() => {
-    if (status !== "open") return;
+    if (status !== STATUS_OPEN) return;
 
     tick().then(() => {
       if (!dialog) return;
@@ -63,23 +69,33 @@
     status = "cancel";
   }
 
-  let resolver: ((state: string) => void) | undefined;
+  /**
+   * show関数の提供
+   */
+  let resolver: ((state: Value) => void) | undefined;
   export function show() {
-    status = "open";
-    return new Promise<string>((resolve) => {
+    status = STATUS_OPEN;
+    return new Promise<Value>((resolve) => {
       resolver = resolve;
     });
   }
 
   $effect(() => {
-    if (status !== "open") {
+    if (status !== STATUS_OPEN) {
       resolver?.(status);
       resolver = undefined;
     }
   });
+
+  /**
+   * exit関数の提供
+   */
+  export function exit(code: Value) {
+    status = code;
+  }
 </script>
 
-{#if status === "open"}
+{#if status === STATUS_OPEN}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
@@ -114,7 +130,15 @@
         onmousedown={dragStart}
         class="caption"
       >
-        <div>{caption}</div>
+        <div>
+          {#if !caption}
+            untitled
+          {:else if typeof caption === "string"}
+            {caption}
+          {:else}
+            {@render caption?.()}
+          {/if}
+        </div>
         <button class="close" onclick={close} aria-label="閉じる">
           <CancelCircleIcon fill={css.bgc} />
         </button>

@@ -1,49 +1,19 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import TreeNode from "./TreeNode.svelte";
-  import {
-    type TreeItem,
-    ArrowDropDownIcon,
-    MoreVertIcon,
-  } from "../css.svelte";
+  import TreeItem from "./TreeItem.svelte";
+  import { ArrowDropDownIcon, MoreVertIcon } from "../css.svelte";
 
-  type DropPosition = "before" | "inside" | "after";
-
-  type DragContext = {
-    active: boolean;
-    started: boolean;
-    pointerId: number;
-    startX: number;
-    startY: number;
-    x: number;
-    y: number;
-    preview: HTMLElement | null;
-    sourceId: string | null;
-    sourceElement: HTMLElement | null;
-    dragIds: string[];
-    targetId: string | null;
-    position: DropPosition | null;
-    moved: boolean;
-  };
-
-  type TreeContext = {
-    readonly selectedIds: Set<string>;
-    readonly drag: DragContext;
-    pointerDown: (e: PointerEvent, node: TreeItem, element: HTMLElement) => void;
-  };
+  import { type TreeNode, type TreeContext } from "../type/Tree";
 
   let {
     node,
     level = 0,
-    onSelect,
-    onMenu,
   }: {
-    node: TreeItem;
+    node: TreeNode;
     level?: number;
-    onSelect: (id: string, ctrl?: boolean) => void;
-    onMenu: (e: MouseEvent, node: TreeItem) => void;
   } = $props();
 
+  // コンテキストを取得=Treeで設定された値にアクセスできる
   const tree = getContext<TreeContext>("tree");
 
   let open = $state(true);
@@ -56,6 +26,12 @@
     tree.drag.targetId === node.id ? tree.drag.position : null,
   );
 
+  /**
+   * このアイテムでポインタが押下されたときの処理
+   * イベントに設定される
+   *
+   * @param e
+   */
   function pointerDown(e: PointerEvent) {
     if (e.button !== 0) return;
 
@@ -64,9 +40,14 @@
     // 展開ボタンやメニューボタンの操作はドラッグ開始対象にしない。
     if (target.closest("button, .menu")) return;
 
+    // このアイテムのノード情報をもってTreeのpointerDownをコール
     tree.pointerDown(e, node, e.currentTarget as HTMLElement);
   }
 
+  /**
+   * クリック時の処理Treeに通知したほうがいいかもしれない
+   * @param e
+   */
   function click(e: MouseEvent) {
     // ドラッグ直後のclickは選択処理を発生させない。
     if (tree.drag.moved) {
@@ -74,12 +55,16 @@
       return;
     }
 
-    onSelect(node.id, e.ctrlKey || e.metaKey);
+    tree.selectNode(node, e.ctrlKey || e.metaKey);
   }
 
+  /**
+   * エンターが押されたときは選択する
+   * @param e
+   */
   function keydown(e: KeyboardEvent) {
     if (e.key === "Enter") {
-      onSelect(node.id);
+      tree.selectNode(node);
     }
   }
 </script>
@@ -135,17 +120,18 @@
     <span class:inside={dropPosition === "inside"}>
       {node.label}
     </span>
+    {#if tree.onMenu}
+      <div style:width="16px"></div>
 
-    <div style:width="16px"></div>
-
-    <div class="menu" style:margin-left="">
-      <MoreVertIcon
-        onclick={(e) => {
-          e.stopPropagation();
-          onMenu(e, node);
-        }}
-      />
-    </div>
+      <div class="menu" style:margin-left="">
+        <MoreVertIcon
+          onclick={async (e) => {
+            e.stopPropagation();
+            await tree.onMenu?.(e, node);
+          }}
+        />
+      </div>
+    {/if}
   </div>
 
   {#if dropPosition === "after"}
@@ -155,12 +141,7 @@
 
 {#if open && node.children}
   {#each node.children as child}
-    <TreeNode
-      node={child}
-      level={level + 1}
-      onSelect={onSelect}
-      onMenu={onMenu}
-    />
+    <TreeItem node={child} level={level + 1} />
   {/each}
 {/if}
 

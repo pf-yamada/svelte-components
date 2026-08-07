@@ -226,7 +226,8 @@ export { default as Input } from "./component/Input.svelte";
 export { default as Code } from "./component/Code.svelte";
 export { default as Tree } from "./component/Tree.svelte";
 export { default as PopupMenu } from "./component/PopupMenu.svelte";
-export { default as ModalDialog } from "./component/ModalDialog.svelte";
+export { default as Popup } from "./component/Popup.svelte";
+export { default as Dialog } from "./component/Dialog.svelte";
 
 // // layout
 export { default as LeftMenuLayout } from "./layout/LeftMenuLayout.svelte";
@@ -251,10 +252,10 @@ export { default as InputSample } from "./sample/InputSample.svelte";
 export { default as CodeSample } from "./sample/CodeSample.svelte";
 export { default as TreeSample } from "./sample/TreeSample.svelte";
 
-// // type
+// type
 export type { Color };
 
-// //
+// 属性型
 export type CssAttributes = Css & CssAliases & { [key: `--${string}`]: string };
 export type DivAttributes = CssAttributes & HTMLAttributes<HTMLDivElement>;
 export type PreAttributes = CssAttributes & HTMLAttributes<HTMLPreElement>;
@@ -267,15 +268,28 @@ export type SVGAttributes = CssAttributes & SvelteSVGAttributes<SVGSVGElement>;
 export type SelectAttributes = CssAttributes & HTMLSelectAttributes;
 export type OptionAttributes = CssAttributes & HTMLOptionAttributes;
 
-export type TreeItem = {
-  id: string;
-  label: string;
-  children?: TreeItem[];
+// Event
+export type MouseEventWithCurrentTarget = MouseEvent & {
+  currentTarget: EventTarget & SVGSVGElement;
 };
-export type TreeChildren = TreeItem["children"];
+
+// その他
+export { type BindPopup } from "./type/Popup.ts";
+export { type BindTree, type TreeNode } from "./type/Tree.ts";
+export { type BindDialog } from "./type/Dialog.ts";
 
 export type MenuItem = {
   label: string;
   onclick?: () => void;
   disabled?: boolean;
 };
+
+// anyのかわり
+export type Value =
+  | string
+  | number
+  | boolean
+  | undefined
+  | null
+  | Value[]
+  | { [key: string | number | symbol]: Value };
