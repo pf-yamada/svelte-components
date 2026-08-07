@@ -1,0 +1,25 @@
+{
+  "nodeModulesDir": "auto",
+  "tasks": {
+    "dev": "deno run -A npm:vite dev",
+    "build": "deno run -A --node-modules-dir=auto npm:vite build",
+    "preview": "deno run -A --node-modules-dir=auto npm:vite preview --host 0.0.0.0 --port 4173 --strictPort",
+    "prepare": "deno run -A --node-modules-dir=auto npm:@sveltejs/kit/svelte-kit sync || echo ''",
+    "check": "deno run -A --node-modules-dir=auto npm:@sveltejs/kit/svelte-kit sync && deno run -A --node-modules-dir=auto npm:svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "deno run -A --node-modules-dir=auto npm:@sveltejs/kit/svelte-kit sync && deno run -A --node-modules-dir=auto npm:svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "imports": {
+    "@deno/vite-plugin": "npm:@deno/vite-plugin@^2.0.2",
+    "@sveltejs/adapter-static": "npm:@sveltejs/adapter-static@^3.0.10",
+    "@sveltejs/kit": "npm:@sveltejs/kit@^2.69.2",
+    "@sveltejs/vite-plugin-svelte": "npm:@sveltejs/vite-plugin-svelte@^7.2.0",
+    "@types/prismjs": "npm:@types/prismjs@^1.26.6",
+    "csstype": "npm:csstype@^3.2.3",
+    "prettier": "npm:prettier@^3.9.6",
+    "prettier-plugin-svelte": "npm:prettier-plugin-svelte@^4.1.1",
+    "prismjs": "npm:prismjs@^1.30.0",
+    "svelte": "npm:svelte@^5.56.4",
+    "svelte-check": "npm:svelte-check@^4.7.2",
+    "vite": "npm:vite@^8.1.4"
+  }
+}

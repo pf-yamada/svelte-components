@@ -1,0 +1,25 @@
+{
+  "name": "deno_${localWorkspaceFolderBasename}",
+  "build": {
+    "dockerfile": "Dockerfile",
+  },
+  "runArgs": ["--name", "vsc-${localWorkspaceFolderBasename}"],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "denoland.vscode-deno",
+        "svelte.svelte-vscode",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "deno.enable": true,
+        "deno.disablePaths": [
+          "./.svelte-kit",
+          "./.vite",
+          "./build",
+          "./node_modules"
+        ],
+      },
+    },
+  },
+}
