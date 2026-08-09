@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { setContext, onMount } from "svelte";
+  import { setContext, onMount, type Snippet } from "svelte";
   import TreeItem from "./TreeItem.svelte";
-  import { generateId, type MouseEventWithCurrentTarget } from "../css.svelte";
+  import { at, generateId, type DivAttributes } from "../css.svelte";
 
   import {
     type TreeNode,
@@ -12,13 +12,19 @@
 
   let {
     root = $bindable(),
-    onMenu,
+    value = $bindable(),
+    selectedNodes = $bindable([]),
+    item,
+    onMoveChallenge,
+    ...rest
   }: {
     root: TreeNode[];
-    onMenu?: (e: MouseEventWithCurrentTarget, node: TreeNode) => Promise<void>;
-  } = $props();
-
-  let selectedIds = $state(new Set<string>());
+    value: TreeNode;
+    selectedNodes: TreeNode[];
+    item?: Snippet<[TreeNode, DropPosition]>;
+    onMoveChallenge?: (target: TreeNode, sources: TreeNode[]) => boolean;
+    onSelect?: (target: TreeNode) => void;
+  } & DivAttributes = $props();
 
   const drag = $state<DragContext>({
     active: false,
@@ -28,11 +34,11 @@
     startY: 0,
     x: 0,
     y: 0,
-    sourceId: null,
+    sourceNode: null,
     sourceElement: null,
     preview: null,
-    dragIds: [],
-    targetId: null,
+    dragNodes: [],
+    targetNode: null,
     position: null,
     moved: false,
   });
@@ -42,86 +48,62 @@
   const PREVIEW_OFFSET_Y = 12;
 
   /**
-   * idで識別されるノードを選択中SETに追加する
+   * nodeで識別されるノードを選択中SETに追加する
    * CTRLが押されていたら追加で選択する
    *
-   * @param id
+   * @param node
    * @param isAddSelect
    */
   function selectNode(node: TreeNode, isAddSelect = false) {
-    const id = node.id;
     if (isAddSelect) {
-      const next = new Set(selectedIds);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      selectedIds = next;
+      const next = new Set(selectedNodes);
+      next.has(node) ? next.delete(node) : next.add(node);
+      selectedNodes = Array.from(next);
     } else {
-      selectedIds = new Set([id]);
+      selectedNodes = [node];
     }
+    value = node;
   }
 
   /**
-   * idで識別されるノードを削除する子ノード群から再帰的に検索して削除する
+   * 子ノード群から再帰的にノードを検索して削除する
    * 削除できたらそのノードを返す。
    * このとき選択中の一覧からは消していないがいいのか？TODO
    *
    * @param items
-   * @param id
+   * @param node
    */
   function removeNode(
     items: TreeNode[] | undefined,
-    id: string,
+    node: TreeNode,
   ): TreeNode | undefined {
     if (!items) return undefined;
 
     for (let i = 0; i < items.length; i++) {
-      if (items[i].id === id) return items.splice(i, 1)[0];
+      if (items[i] === node) return items.splice(i, 1)[0];
 
-      const result = removeNode(items[i].children, id);
+      const result = removeNode(items[i].children, node);
       if (result) return result;
     }
   }
 
   /**
-   * 子ノード群を再帰的に検索して、指定されたIDのノードを探して返す。
-   * なければundefinedを返す。
-   *
-   * @param items
-   * @param id
-   */
-  function findNode(
-    items: TreeNode[] | undefined,
-    id: string,
-  ): TreeNode | undefined {
-    if (!items) return undefined;
-
-    for (const node of items) {
-      if (node.id === id) return node;
-
-      const result = findNode(node.children, id);
-      if (result) return result;
-    }
-  }
-
-  /**
-   * 子ノード群の子を検索してIDが見つかったら子ノードを親として返す。
-   * あまり人間的ではないけど、指定するのは子ノード群なのでルートは見つけられない？
-   * いや、rootノードは配列（それ自体が子ノード群）なのでその心配はない。
+   * 任意のノードの親ノードを探して返す
    * 親子関係を持ってたどるよりはシンプルな実装と言えるしJSON化も気にしなくていい。
    *
    * @param items
-   * @param id
+   * @param target
    */
   function findParent(
     items: TreeNode[] | undefined,
-    id: string,
+    target: TreeNode,
   ): TreeNode | undefined {
     if (!items) return undefined;
 
     for (const node of items) {
-      if (node.children?.some((child) => child.id === id)) return node;
+      if (node.children?.some((child) => child === target)) return node;
 
-      const parent = findParent(node.children, id);
+      const parent = findParent(node.children, target);
       if (parent) return parent;
     }
   }
@@ -139,6 +121,18 @@
       label,
       children: [],
     };
+  }
+
+  /**
+   * あるノードが、ノードを持っているか再帰的に調べる。
+   * 自分自身もIDのチェック対象となる。
+   *
+   * @param item
+   * @param node
+   */
+  function contains(item: TreeNode, node: TreeNode): boolean {
+    if (item === node) return true;
+    return item.children?.some((child) => contains(child, node)) ?? false;
   }
 
   /**
@@ -167,11 +161,11 @@
     target: TreeNode,
     label: string,
   ): TreeNode | undefined {
-    const parent = findParent(root, target.id);
+    const parent = findParent(root, target);
     const siblings = parent ? parent.children! : root;
     if (!siblings) return undefined;
 
-    const index = siblings.findIndex((i) => i.id === target.id);
+    const index = siblings.findIndex((n) => n === target);
     if (index < 0) return undefined;
 
     const item = newItem(label);
@@ -180,21 +174,12 @@
   }
 
   export function remove(node: TreeNode) {
-    removeNode(root, node.id);
-    selectedIds.delete(node.id);
-    selectedIds = new Set(selectedIds);
-  }
-
-  /**
-   * あるノードが、idで指定されたノードを持っているか再帰的に調べる。
-   * 自分自身もIDのチェック対象となる。
-   *
-   * @param item
-   * @param id
-   */
-  function contains(item: TreeNode, id: string): boolean {
-    if (item.id === id) return true;
-    return item.children?.some((child) => contains(child, id)) ?? false;
+    removeNode(root, node);
+    const nodes = new Set(selectedNodes);
+    if (nodes.has(node)) {
+      nodes.delete(node);
+      selectedNodes = Array.from(nodes);
+    }
   }
 
   /**
@@ -203,53 +188,61 @@
    *  before: 直前に移動
    *  inside: 中の末尾に移動
    *  after: 直後に移動
-   * @param sourceIds
+   * @param sourceNodes
    * @param targetId
    * @param position
    */
-  function move(sourceIds: string[], targetId: string, position: DropPosition) {
-    if (sourceIds.includes(targetId)) return;
+  function move(
+    sourceNodes: TreeNode[],
+    target: TreeNode,
+    position: DropPosition,
+  ) {
+    // 移動対象に移動先が入っていてはいけない
+    if (sourceNodes.includes(target)) return;
 
-    const target = findNode(root, targetId);
-    if (!target) return;
-
-    const selectedNodes = sourceIds
-      .map((id) => findNode(root, id))
-      .filter((node): node is TreeNode => node !== undefined);
-
-    const rootNodes = selectedNodes.filter(
+    // 移動しなくていいノードを落とす
+    // 親子で選択されていたら親だけ移動すればいい
+    const rootNodes = sourceNodes.filter(
       (node) =>
-        !selectedNodes.some(
-          (parent) => parent !== node && contains(parent, node.id),
+        !sourceNodes.some(
+          (parent) => parent !== node && contains(parent, node),
         ),
     );
 
-    if (rootNodes.some((node) => contains(node, targetId))) return;
+    // 子には移動できない
+    if (rootNodes.some((node) => contains(node, target))) return;
 
+    // ここでユーザーのチェックを走らせるのがいいかもしれない
+    if (onMoveChallenge && !onMoveChallenge(target, rootNodes)) return;
+
+    // 移動するノードをツリーから取り外す
+    // ここではもうキャンセルはできない
     const movingNodes: TreeNode[] = [];
-
     for (const node of rootNodes) {
-      const removed = removeNode(root, node.id);
+      const removed = removeNode(root, node);
       if (removed) movingNodes.push(removed);
     }
-
     if (movingNodes.length === 0) return;
 
+    // 移動さす
     if (position === "inside") {
       target.children ??= [];
       target.children.push(...movingNodes);
       return;
     }
 
-    const parent = findParent(root, targetId);
+    const parent = findParent(root, target);
     const siblings = parent ? parent.children! : root;
     if (!siblings) return;
 
-    const index = siblings.findIndex((n) => n.id === targetId);
+    const index = siblings.findIndex((n) => n === target);
     if (index < 0) return;
 
-    if (position === "before") siblings.splice(index, 0, ...movingNodes);
-    else siblings.splice(index + 1, 0, ...movingNodes);
+    if (position === "before") {
+      siblings.splice(index, 0, ...movingNodes);
+    } else {
+      siblings.splice(index + 1, 0, ...movingNodes);
+    }
   }
 
   /**
@@ -310,7 +303,7 @@
    * finishDragでも呼び出される。
    */
   function clearDropTarget() {
-    drag.targetId = null;
+    drag.targetNode = null;
     drag.position = null;
   }
 
@@ -336,32 +329,39 @@
       return;
     }
 
-    // ドロップ先のIDを取得する
+    // ドロップ先のIDをHTMLElementから取得する
     const targetId = target.dataset.treeNodeId;
 
-    // 自分自身・自分の子孫へのドロップはmove()側でも拒否するが、
-    // ここではガイドを表示しない。
-    if (drag.dragIds.includes(targetId)) {
+    // IDからドロップ先のアイテムを取得する
+    // なければドロップ先をクリアする
+    function findNodeById(
+      items: TreeNode[] | undefined,
+      id: string,
+    ): TreeNode | undefined {
+      if (!items) return undefined;
+      for (const node of items) {
+        if (node.id === id) return node;
+        const result = findNodeById(node.children, id);
+        if (result) return result;
+      }
+    }
+
+    const targetNode = findNodeById(root, targetId);
+    if (!targetNode) {
       clearDropTarget();
       return;
     }
 
-    // IDからドロップ先のアイテムを取得する
-    // なければドロップ先をクリアする
-    const targetNode = findNode(root, targetId);
-    if (!targetNode) {
+    // 自分自身・自分の子孫へのドロップはmove()側でも拒否するが、
+    // ここではガイドを表示しない。
+    if (drag.dragNodes.some((node) => node === targetNode)) {
       clearDropTarget();
       return;
     }
 
     // 子の中にはドラッグできないのでドロップ先としては不適切
     // その場合ドロップ先をクリアする
-    if (
-      drag.dragIds.some((id) => {
-        const source = findNode(root, id);
-        return source ? contains(source, targetId) : false;
-      })
-    ) {
+    if (drag.dragNodes.some((node) => contains(node, targetNode))) {
       clearDropTarget();
       return;
     }
@@ -380,7 +380,7 @@
     else position = "inside";
 
     // ドロップ先と追加先情報をコンテキストに保存
-    drag.targetId = targetId;
+    drag.targetNode = targetNode;
     drag.position = position;
   }
 
@@ -410,17 +410,19 @@
   function pointerDown(e: PointerEvent, node: TreeNode, element: HTMLElement) {
     if (e.button !== 0) return;
 
-    const dragIds = selectedIds.has(node.id) ? [...selectedIds] : [node.id];
+    const dragNodes = new Set(selectedNodes).has(node)
+      ? [...selectedNodes]
+      : [node];
 
     drag.active = true;
     drag.started = false;
     drag.pointerId = e.pointerId;
     drag.startX = drag.x = e.clientX;
     drag.startY = drag.y = e.clientY;
-    drag.sourceId = node.id;
+    drag.sourceNode = node;
     drag.sourceElement = element;
-    drag.dragIds = dragIds;
-    drag.targetId = null;
+    drag.dragNodes = dragNodes;
+    drag.targetNode = null;
     drag.position = null;
     drag.moved = false;
 
@@ -452,8 +454,8 @@
     }
 
     updatePreview();
-    updateDropTarget();
     autoScroll();
+    updateDropTarget();
   }
 
   /**
@@ -470,9 +472,9 @@
   function finishDrag(cancel = false) {
     if (!drag.active) return;
 
-    const targetId = drag.targetId;
+    const target = drag.targetNode;
     const position = drag.position;
-    const ids = [...drag.dragIds];
+    const nodes = [...drag.dragNodes];
     const wasStarted = drag.started;
 
     removePreview();
@@ -480,13 +482,13 @@
     drag.active = false;
     drag.started = false;
     drag.pointerId = -1;
-    drag.sourceId = null;
+    drag.sourceNode = null;
     drag.sourceElement = null;
-    drag.dragIds = [];
+    drag.dragNodes = [];
     clearDropTarget();
 
-    if (!cancel && wasStarted && targetId && position) {
-      move(ids, targetId, position);
+    if (!cancel && wasStarted && target && position) {
+      if (target) move(nodes, target, position);
     }
   }
 
@@ -546,43 +548,29 @@
    * Treeでコンテキストを作成してTreeNodeから参照できるようにする
    *
    * これによってpropsで渡さなくてもよくなる。
-   * selectedIdsは、参照された瞬間の選択中のID群
+   * selectedNodesは、参照された瞬間の選択中のNode群
    * dragは、ドラッグ中の情報を参照するためのオブジェクト
    * pointerDownは、TreeNode側から呼び出される関数。
    */
   const context: TreeContext = {
-    get selectedIds() {
-      return selectedIds;
+    get selectedNodes() {
+      return selectedNodes;
     },
     drag,
     pointerDown,
     selectNode,
-    get onMenu() {
-      return onMenu;
-    },
   };
 
   setContext("tree", context);
-
-  /**
-   * ポップアップメニュー処理
-   */
-  let menu = $state(false);
-  let menuXpos = $state(0);
-  let menuYpos = $state(0);
-  let currentNode = $state<TreeNode>(undefined!);
 </script>
 
 <div
   style:display="inline-block"
-  style:border="1px solid #ccc"
   style:padding="4px"
-  style:border-radius="8px"
   style:touch-action="none"
+  {...at(rest)}
 >
-  {JSON.stringify(Array.from(selectedIds))}
-
-  {#each root as node}
-    <TreeItem {node} />
+  {#each root as node, i}
+    <TreeItem bind:node={root[i]} {item} />
   {/each}
 </div>

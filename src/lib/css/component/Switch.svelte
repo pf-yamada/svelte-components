@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
     css,
-    ComboButton,
+    Combo,
     type CssAttributes,
     type DivAttributes,
   } from "../css.svelte";
@@ -39,7 +39,7 @@
   );
 </script>
 
-<ComboButton
+<Combo
   bind:value
   options={[
     {

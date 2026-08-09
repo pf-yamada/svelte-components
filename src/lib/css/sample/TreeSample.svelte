@@ -5,11 +5,13 @@
     Popup,
     Dialog,
     Button,
+    Item,
+    MoreVertIcon,
+    type DropPosition,
     type TreeNode,
     type BindPopup,
     type BindTree,
     type BindDialog,
-    type MouseEventWithCurrentTarget,
     type Value,
   } from "../css.svelte";
 
@@ -77,14 +79,17 @@
 
   let dialogMode = $state<"delete" | "create">(undefined!);
   let targetNode = $state<TreeNode>(undefined!);
-</script>
 
-<Tree
-  bind:this={tree}
-  root={nodes}
-  onMenu={async (e: MouseEventWithCurrentTarget, node: TreeNode) => {
+  /**
+   * メニューがクリックされたときの処理
+   *
+   * @param e
+   * @param node
+   */
+  async function onMenu(e: MouseEvent, node: TreeNode) {
     targetNode = node;
     const action = await popup.show(e.clientX, e.clientY);
+    console.log(action);
     switch (action) {
       case "delete": {
         dialogMode = "delete";
@@ -109,40 +114,67 @@
         break;
       }
     }
-  }}
-  /*
-.popup-menu button {
-    padding: 8px 12px;
-
-    border: 0;
-    background: transparent;
-
-    text-align: left;
-    cursor: pointer;
+  }
+  /**
+   * 移動の可否をチェックするユーザ関数
+   *
+   * @param target
+   * @param sources
+   */
+  function onMoveChallenge(target: TreeNode, sources: TreeNode[]) {
+    return true;
   }
 
-  .popup-menu button:hover:not(:disabled) {
-    background: #f5f5f5;
-  }
+  let value = $state<TreeNode>(undefined!);
+  let selectedNodes = $state<TreeNode[]>([]);
+</script>
 
-  .popup-menu button:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-*/
-/>
+<div>
+  {JSON.stringify(value ? value.id : "")}
+  {JSON.stringify(selectedNodes.map((i) => i.id))}
+</div>
+
+<!--
+  ツリーコンポーネント
+-->
+<Tree
+  bind:this={tree}
+  bind:root={nodes}
+  bind:value
+  bind:selectedNodes
+  {onMoveChallenge}
+>
+  {#snippet item(node: TreeNode, dropPos: DropPosition)}
+    <div class="treenode" class:inside={dropPos === "inside"}>
+      [A]
+      {node.label}
+      {#if node.level !== 0}
+        <div style:width="16px"></div>
+        <button
+          class="menuicon"
+          onclick={async (e) => {
+            e.stopPropagation();
+            await onMenu(e, node);
+          }}
+        >
+          <MoreVertIcon />
+        </button>
+      {/if}
+    </div>
+  {/snippet}
+</Tree>
 
 <!--
   ポップアップメニュー
 -->
-<Popup bind:this={popup}>
-  <div style:display="flex" style:flex-direction="column">
-    <button type="button" onclick={() => popup.exit("delete")}> Delete </button>
-    <button type="button" onclick={() => popup.exit("create")}> Create </button>
-  </div>
+<Popup bind:this={popup} -dsp="flex" -flx-d="column" -pad="8px">
+  <Item onClick={() => popup.exit("delete")}>Delete</Item>
+  <Item onClick={() => popup.exit("create")}>Create</Item>
 </Popup>
 
-<!-- 削除ダイアログ（statusが"open"のときだけ表示） -->
+<!--
+  ダイアログ
+-->
 <Dialog bind:this={dialog}>
   <!-- snippetはifの中に書くとマズイ？ -->
   {#snippet caption()}
@@ -199,3 +231,26 @@
     </div>
   {/if}
 </Dialog>
+
+<style>
+  .inside {
+    padding: 2px;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.15);
+  }
+
+  .treenode {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .menuicon {
+    border: 0px;
+    background: transparent;
+    margin-left: auto;
+    visibility: hidden;
+  }
+  .treenode:hover .menuicon {
+    visibility: visible;
+  }
+</style>

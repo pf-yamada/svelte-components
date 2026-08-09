@@ -1,16 +1,22 @@
 <script lang="ts">
-  import { getContext } from "svelte";
+  import { getContext, onMount, type Snippet } from "svelte";
   import TreeItem from "./TreeItem.svelte";
-  import { ArrowDropDownIcon, MoreVertIcon } from "../css.svelte";
+  import { ArrowDropDownIcon } from "../css.svelte";
 
-  import { type TreeNode, type TreeContext } from "../type/Tree";
+  import {
+    type TreeNode,
+    type TreeContext,
+    type DropPosition,
+  } from "../type/Tree";
 
   let {
-    node,
+    node = $bindable(),
     level = 0,
+    item,
   }: {
     node: TreeNode;
     level?: number;
+    item?: Snippet<[TreeNode, DropPosition]>;
   } = $props();
 
   // コンテキストを取得=Treeで設定された値にアクセスできる
@@ -18,12 +24,12 @@
 
   let open = $state(true);
 
-  const selected = $derived(tree.selectedIds.has(node.id));
+  const selected = $derived(!!tree.selectedNodes.find((n) => n === node));
   const dragging = $derived(
-    tree.drag.started && tree.drag.dragIds.includes(node.id),
+    tree.drag.started && tree.drag.dragNodes.includes(node),
   );
   const dropPosition = $derived(
-    tree.drag.targetId === node.id ? tree.drag.position : null,
+    (tree.drag.targetNode === node ? tree.drag.position : null) as DropPosition,
   );
 
   /**
@@ -67,6 +73,10 @@
       tree.selectNode(node);
     }
   }
+
+  $effect(() => {
+    node.level = level;
+  });
 </script>
 
 <div
@@ -117,20 +127,12 @@
       </div>
     {/if}
 
-    <span class:inside={dropPosition === "inside"}>
-      {node.label}
-    </span>
-    {#if tree.onMenu}
-      <div style:width="16px"></div>
-
-      <div class="menu" style:margin-left="">
-        <MoreVertIcon
-          onclick={async (e) => {
-            e.stopPropagation();
-            await tree.onMenu?.(e, node);
-          }}
-        />
-      </div>
+    {#if item}
+      {@render item(node, dropPosition)}
+    {:else}
+      <span class:inside={dropPosition === "inside"}>
+        {node.label}
+      </span>
     {/if}
   </div>
 
@@ -140,8 +142,8 @@
 </div>
 
 {#if open && node.children}
-  {#each node.children as child}
-    <TreeItem node={child} level={level + 1} />
+  {#each node.children as child, i}
+    <TreeItem bind:node={node.children[i]} level={level + 1} {item} />
   {/each}
 {/if}
 
@@ -167,8 +169,9 @@
     position: absolute;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 6px;
     background: lightgray;
+    border-radius: 3px;
     pointer-events: none;
   }
 
@@ -187,14 +190,5 @@
   .selected {
     background: #3390ff;
     color: white;
-  }
-
-  .tree-item .menu {
-    margin-left: auto;
-    visibility: hidden;
-  }
-
-  .tree-item:hover .menu {
-    visibility: visible;
   }
 </style>

@@ -3,15 +3,15 @@
   import {
     at,
     ButtonSample,
-    ComboButtonSample,
+    ComboSample,
     SwitchSample,
-    RadioButtonSample,
+    RadioSample,
     IconSample,
-    CheckboxSample,
+    CheckSample,
     SelectSample,
     InputSample,
     CodeSample,
-    SelectMultipleSample,
+    MultipleSample,
     TreeSample,
   } from "$lib/css/css.svelte";
   const id = $derived(page.url.searchParams.get("id"));
@@ -21,18 +21,18 @@ ID:{id}
 <div {...at({ "-mgn": "16px" })}>
   {#if id === "button"}
     <ButtonSample />
-  {:else if id === "combo_button"}
-    <ComboButtonSample />
+  {:else if id === "combo"}
+    <ComboSample />
   {:else if id === "switch"}
     <SwitchSample />
-  {:else if id === "radio_button"}
-    <RadioButtonSample />
-  {:else if id === "checkbox"}
-    <CheckboxSample />
+  {:else if id === "radio"}
+    <RadioSample />
+  {:else if id === "check"}
+    <CheckSample />
   {:else if id === "select"}
     <SelectSample />
-  {:else if id === "select_multiple"}
-    <SelectMultipleSample />
+  {:else if id === "multiple"}
+    <MultipleSample />
   {:else if id === "input"}
     <InputSample />
   {:else if id === "code"}

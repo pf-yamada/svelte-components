@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { css, ComboButton, Code } from "../css.svelte";
+  import { css, Combo, Code } from "../css.svelte";
 
   const options = [
     {
@@ -32,7 +32,7 @@
   let value = $state("");
 </script>
 
-<h2>ComboButton</h2>
+<h2>Combo</h2>
 <h3>selected value</h3>
 {JSON.stringify(value)}
 
@@ -71,7 +71,7 @@ const options = [
 {/if}
 
 <h3>default</h3>
-<ComboButton bind:value {options} onclick={(v) => console.log(v)} /><br />
+<Combo bind:value {options} onclick={(v) => console.log(v)} /><br />
 {#if true}
   {@const code = `
 <ComboButton bind:value {options} onclick={(v) => console.log(v)} />
@@ -80,7 +80,7 @@ const options = [
 {/if}
 
 <h3>common attr</h3>
-<ComboButton
+<Combo
   bind:value
   {options}
   onclick={(v) => console.log(v)}
@@ -110,7 +110,7 @@ const options = [
 {/if}
 
 <h3>style from options</h3>
-<ComboButton
+<Combo
   bind:value
   {options}
   onclick={(v) => console.log(v)}

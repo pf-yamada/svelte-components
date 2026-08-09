@@ -1,17 +1,18 @@
 <script lang="ts">
   import { onMount, type Snippet } from "svelte";
-  import { type Value } from "../css.svelte";
+  import { at, type Value, type DivAttributes, css } from "../css.svelte";
 
   const STATUS_OPEN = "==== OPEN ====";
   let {
     x = 0,
     y = 0,
     children,
+    ...rest
   }: {
     x?: number;
     y?: number;
     children: Snippet<[]>;
-  } = $props();
+  } & DivAttributes = $props();
 
   let status = $state<Value>("");
 
@@ -41,6 +42,7 @@
   export function exit(code: any) {
     status = code;
   }
+  $inspect(status);
 
   /**
    * 閉じる
@@ -75,19 +77,19 @@
 </script>
 
 {#if status === STATUS_OPEN}
-  <div class="popup-menu" style:left={`${x}px`} style:top={`${y}px`}>
-    {@render children?.()}
+  <div
+    style:position="fixed"
+    style:z-index="1000"
+    style:background={css.boxBgc}
+    style:border={css.bdr}
+    style:border-radius="6px"
+    style:box-shadow={css.boxShadow}
+    style:left={`${x}px`}
+    style:top={`${y}px`}
+    class="popup-menu" /*closestのチェックに*/
+  >
+    <div {...at(rest)}>
+      {@render children?.()}
+    </div>
   </div>
 {/if}
-
-<style>
-  .popup-menu {
-    position: fixed;
-    z-index: 1000;
-    min-width: 160px;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
-  }
-</style>

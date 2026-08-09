@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { css, SelectMultiple, type InputAttributes } from "../css.svelte";
+  import { css, Multiple, type InputAttributes } from "../css.svelte";
 
   const options = [
     {
@@ -27,6 +27,6 @@
   let value = $state([]);
 </script>
 
-<h2>SelectMultiple</h2>
+<h2>Multiple</h2>
 <h3>default</h3>
-<SelectMultiple {options} bind:value />
+<Multiple {options} bind:value />

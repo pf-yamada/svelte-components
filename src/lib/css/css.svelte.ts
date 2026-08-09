@@ -216,18 +216,18 @@ export function generateId(length: number = 12): string {
 
 // // component
 export { default as Button } from "./component/Button.svelte";
-export { default as ComboButton } from "./component/ComboButton.svelte";
+export { default as Combo } from "./component/Combo.svelte";
 export { default as Switch } from "./component/Switch.svelte";
-export { default as RadioButton } from "./component/RadioButton.svelte";
-export { default as Checkbox } from "./component/Checkbox.svelte";
+export { default as Radio } from "./component/Radio.svelte";
+export { default as Check } from "./component/Check.svelte";
 export { default as Select } from "./component/Select.svelte";
-export { default as SelectMultiple } from "./component/SelectMultiple.svelte";
+export { default as Multiple } from "./component/Multiple.svelte";
 export { default as Input } from "./component/Input.svelte";
 export { default as Code } from "./component/Code.svelte";
 export { default as Tree } from "./component/Tree.svelte";
-export { default as PopupMenu } from "./component/PopupMenu.svelte";
 export { default as Popup } from "./component/Popup.svelte";
 export { default as Dialog } from "./component/Dialog.svelte";
+export { default as Item } from "./component/Item.svelte";
 
 // // layout
 export { default as LeftMenuLayout } from "./layout/LeftMenuLayout.svelte";
@@ -241,13 +241,13 @@ export { default as MoreVertIcon } from "./icon/MoreVertIcon.svelte";
 
 // //
 export { default as ButtonSample } from "./sample/ButtonSample.svelte";
-export { default as ComboButtonSample } from "./sample/ComboButtonSample.svelte";
+export { default as ComboSample } from "./sample/ComboSample.svelte";
 export { default as SwitchSample } from "./sample/SwitchSample.svelte";
-export { default as RadioButtonSample } from "./sample/RadioButtonSample.svelte";
-export { default as CheckboxSample } from "./sample/CheckboxSample.svelte";
+export { default as RadioSample } from "./sample/RadioSample.svelte";
+export { default as CheckSample } from "./sample/CheckSample.svelte";
 export { default as IconSample } from "./sample/IconSample.svelte";
 export { default as SelectSample } from "./sample/SelectSample.svelte";
-export { default as SelectMultipleSample } from "./sample/SelectMultipleSample.svelte";
+export { default as MultipleSample } from "./sample/MultipleSample.svelte";
 export { default as InputSample } from "./sample/InputSample.svelte";
 export { default as CodeSample } from "./sample/CodeSample.svelte";
 export { default as TreeSample } from "./sample/TreeSample.svelte";
@@ -268,21 +268,14 @@ export type SVGAttributes = CssAttributes & SvelteSVGAttributes<SVGSVGElement>;
 export type SelectAttributes = CssAttributes & HTMLSelectAttributes;
 export type OptionAttributes = CssAttributes & HTMLOptionAttributes;
 
-// Event
-export type MouseEventWithCurrentTarget = MouseEvent & {
-  currentTarget: EventTarget & SVGSVGElement;
-};
-
 // その他
 export { type BindPopup } from "./type/Popup.ts";
-export { type BindTree, type TreeNode } from "./type/Tree.ts";
+export {
+  type BindTree,
+  type TreeNode,
+  type DropPosition,
+} from "./type/Tree.ts";
 export { type BindDialog } from "./type/Dialog.ts";
-
-export type MenuItem = {
-  label: string;
-  onclick?: () => void;
-  disabled?: boolean;
-};
 
 // anyのかわり
 export type Value =

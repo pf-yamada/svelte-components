@@ -1,18 +1,17 @@
-import { type MouseEventWithCurrentTarget } from "../css.svelte.ts";
-
 /**
  * ツリーのノード（これをもとにツリーが描画される）
  */
 export type TreeNode = {
   id: string;
   label: string;
+  level?: number;
   children?: TreeNode[];
 };
 
 /**
  * ドロップ先の場所
  */
-export type DropPosition = "before" | "inside" | "after";
+export type DropPosition = "before" | "inside" | "after" | null;
 
 /**
  * ドラッグ中の動作
@@ -25,11 +24,11 @@ export type DragContext = {
   startY: number;
   x: number;
   y: number;
-  sourceId: string | null;
+  sourceNode: TreeNode | null;
   sourceElement: HTMLElement | null;
   preview: HTMLElement | null;
-  dragIds: string[];
-  targetId: string | null;
+  dragNodes: TreeNode[];
+  targetNode: TreeNode | null;
   position: DropPosition | null;
   moved: boolean;
 };
@@ -38,11 +37,10 @@ export type DragContext = {
  * TreeとTreeItemがやり取りするためのオブジェクト
  */
 export type TreeContext = {
-  readonly selectedIds: Set<string>;
+  readonly selectedNodes: TreeNode[];
   readonly drag: DragContext;
   pointerDown: (e: PointerEvent, node: TreeNode, element: HTMLElement) => void;
   selectNode: (node: TreeNode, isAddSelect?: boolean) => void;
-  onMenu?: (e: MouseEventWithCurrentTarget, node: TreeNode) => Promise<void>;
 };
 
 /**

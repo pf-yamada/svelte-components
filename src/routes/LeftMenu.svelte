@@ -25,12 +25,12 @@
     <h2>Menu</h2>
     <ul>
       <li><a href="?id=button">Button</a></li>
-      <li><a href="?id=combo_button">ComboButton</a></li>
+      <li><a href="?id=combo">Combo</a></li>
       <li><a href="?id=switch">Switch</a></li>
-      <li><a href="?id=radio_button">RadioButton</a></li>
-      <li><a href="?id=checkbox">Checkbox</a></li>
+      <li><a href="?id=radio">Radio</a></li>
+      <li><a href="?id=check">Check</a></li>
       <li><a href="?id=select">Select</a></li>
-      <li><a href="?id=select_multiple">SelectMultiple</a></li>
+      <li><a href="?id=multiple">Multiple</a></li>
       <li><a href="?id=input">Input</a></li>
       <li><a href="?id=code">Code</a></li>
       <li><a href="?id=icon">Icon</a></li>
