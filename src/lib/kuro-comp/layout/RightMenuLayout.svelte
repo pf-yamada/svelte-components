@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onMount, type Snippet } from "svelte";
-  import { css, at, type DivAttributes } from "$lib/css/css.svelte";
+  import { css, at, type DivAttributes } from "$lib/kuro-comp/css.svelte";
 
   let {
     open = $bindable(true),
     sidebar,
     children,
     "break-size": breakSize = 768,
-    "storage-name": storageName = "left-sidebar",
+    "storage-name": storageName = "right-sidebar",
     "width-min": widthMin = 100,
     "width-max": widthMax = 400,
     "default-width": width = 200,
@@ -31,7 +31,7 @@
   let resizing = $state(false);
 
   //
-  //  resizerのonpointerdowns処理
+  //  resizerのonpointerdown処理
   //
   function startResize(e: PointerEvent) {
     if (!open) return;
@@ -39,7 +39,7 @@
     function move(ev: PointerEvent) {
       width = Math.max(
         widthMin,
-        Math.min(widthMax, startWidth + ev.clientX - startX),
+        Math.min(widthMax, startWidth - (ev.clientX - startX)),
       );
     }
 
@@ -126,32 +126,44 @@
   ></div>
 {/if}
 <div
-  {...at({
-    class: "root",
-    "-bgc": css.bgc,
-    "-fgc": "auto",
-  } satisfies DivAttributes)}
+  style:color="auto"
+  style:display="flex"
+  style:flex-direction="column"
+  style:flex="1 1 0"
+  style:overflow="hidden"
+  style:min-width="0"
+  style:min-height="0"
+  {...at(rest)}
 >
   {#if header}
-    <header class="header">
+    <header style:flex-shrink="0">
       {@render header()}
     </header>
   {/if}
-  <div {...at({ class: "layout" }, rest)}>
-    <aside
-      class="sidebar"
-      class:open
-      class:resizing
-      class:mobile
-      style:width={open ? width + "px" : "0px"}
+  <div
+    style:display="flex"
+    style:flex="1 1 0"
+    style:min-width="0"
+    style:min-height="0"
+    style:overflow="hidden"
+  >
+    <!--
+      メインコンテンツ
+    -->
+    <main
+      style:display="flex"
+      style:flex-direction="column"
+      style:flex="1 1 0"
+      style:overflow="hidden"
+      style:min-width="0"
+      style:min-height="0"
+      /* style:background-color="green" */
     >
-      <div class="sidebar-content">
-        {@render sidebar?.()}
-      </div>
-    </aside>
+      {@render children?.()}
+    </main>
 
     <!--
-      オープンの時は表示しない
+      オープンの時は表示しないサイズ変更バー
     -->
     <div
       role="button"
@@ -168,52 +180,36 @@
     ></div>
 
     <!--
-      メインコンテンツ
+      右メニュー
     -->
-    <main class="main">
-      {@render children?.()}
-    </main>
+    <aside
+      class="sidebar"
+      class:open
+      class:resizing
+      class:mobile
+      style:width={open ? width + "px" : "0px"}
+    >
+      <div class="sidebar-content">
+        {@render sidebar?.()}
+      </div>
+    </aside>
   </div>
 
   {#if footer}
-    <footer class="footer">
+    <footer style:flex-shrink="0">
       {@render footer()}
     </footer>
   {/if}
 </div>
 
 <style>
-  .root {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .header {
-    flex-shrink: 0;
-  }
-
-  .footer {
-    flex-shrink: 0;
-  }
-
-  .layout {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-  }
-
   /*
-    左バー
+    右バー
   */
   .sidebar {
     flex-shrink: 0;
     overflow: hidden;
-    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
     min-width: 0;
 
     transition:
@@ -228,7 +224,7 @@
   .sidebar.mobile {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
     height: 100vh;
     z-index: 1000;
     box-shadow: 0 0 20px rgb(0 0 0 / 0.2);
@@ -263,14 +259,6 @@
 
   .resizer.mobile {
     display: none;
-  }
-  /*
-    メイン
-  */
-  .main {
-    flex: 1;
-    min-width: 0;
-    overflow: auto;
   }
 
   /*

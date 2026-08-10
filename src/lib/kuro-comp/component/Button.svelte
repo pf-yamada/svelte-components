@@ -8,12 +8,12 @@
   } from "../css.svelte";
 
   let {
-    onclick,
+    onClick,
     children,
     "$enable-ripple": enableRipple = true,
     ...rest
   }: {
-    onclick?: ButtonAttributes["onclick"];
+    onClick?: ButtonAttributes["onclick"];
     children?: Snippet<[]>;
     "$enable-ripple"?: boolean;
   } & ButtonAttributes = $props();
@@ -65,7 +65,7 @@
 <button
   onclick={(e: LocalEvent) => {
     if (enableRipple) ripple(e);
-    onclick?.(e);
+    onClick?.(e);
   }}
   {...at(attr, rest)}
 >

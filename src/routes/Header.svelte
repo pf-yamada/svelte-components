@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { css, at, type DivAttributes } from "$lib/css/css.svelte";
+  import { css, at, type DivAttributes } from "$lib/kuro-comp/css.svelte";
   let { open = $bindable(), ...rest }: { open: boolean } & DivAttributes =
     $props();
 </script>

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Check } from "../css.svelte";
+  import { Checkbox } from "../css.svelte";
 
-  let value = $state();
+  let value = $state<boolean>(false);
 </script>
 
-<h2>Check</h2>
+<h2>Checkbox</h2>
 <h3>description</h3>
 チェックボックスはコンポーネントにラップしてしまうとbind:groupは使えない。
 
@@ -12,7 +12,9 @@
 {JSON.stringify(value)}
 
 <h3>default</h3>
-<Check bind:checked={value}>A</Check>
+<Checkbox bind:checked={value}>A</Checkbox>
 
 <h3>customize size and color</h3>
-<Check bind:checked={value} -box-color="lightgreen" -box-size="32px">B</Check>
+<Checkbox bind:checked={value} -box-color="lightgreen" -box-size="32px">
+  B
+</Checkbox>

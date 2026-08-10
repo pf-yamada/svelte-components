@@ -74,7 +74,7 @@ const options = [
 <Combo bind:value {options} onclick={(v) => console.log(v)} /><br />
 {#if true}
   {@const code = `
-<ComboButton bind:value {options} onclick={(v) => console.log(v)} />
+<Combo bind:value {options} onclick={(v) => console.log(v)} />
 `}
   <Code {code} />
 {/if}
@@ -83,7 +83,7 @@ const options = [
 <Combo
   bind:value
   {options}
-  onclick={(v) => console.log(v)}
+  onClick={(v) => console.log(v)}
   -base-style={{ "-bgc": "blue" }}
   -start-style={{ "-rad": css.top("12px") }}
   -end-style={{ "-rad": css.right("12px") }}
@@ -94,10 +94,10 @@ const options = [
 /><br />
 {#if true}
   {@const code = `
-<ComboButton
+<Combo
   bind:value
   {options}
-  onclick={(v) => console.log(v)}
+  onClick={(v) => console.log(v)}
   -base-style={{ bgc: "blue" }}
   -start-style={{ rad: css.top("12px") }}
   -end-style={{ rad: css.right("12px") }}
@@ -113,7 +113,7 @@ const options = [
 <Combo
   bind:value
   {options}
-  onclick={(v) => console.log(v)}
+  onClick={(v) => console.log(v)}
   style-name="s"
   -base-style={{ "-bgc": "orange", "-rad": css.upper("12px") }}
   -start-style={{ "-rad": css.upper("12px") }}
@@ -123,10 +123,10 @@ const options = [
 /><br />
 {#if true}
   {@const code = `
-<ComboButton
+<Combo
   bind:value
   {options}
-  onclick={(v) => console.log(v)}
+  onClick={(v) => console.log(v)}
   style-name="s"
   -base-style={{ bgc: "orange", rad: css.upper("12px") }}
   -start-style={{ rad: css.upper("12px") }}

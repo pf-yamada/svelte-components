@@ -25,7 +25,7 @@
 <Button
   -bgc="darkorange"
   -rad={css.horizontal()}
-  onclick={() => {
+  onClick={() => {
     console.log("horizontal");
   }}>HORIZONTAL</Button
 >

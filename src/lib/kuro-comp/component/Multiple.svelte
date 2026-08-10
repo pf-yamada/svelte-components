@@ -6,7 +6,7 @@
     ArrowDropDownIcon,
     at,
     Button,
-    Check,
+    Checkbox,
     css,
   } from "../css.svelte";
 
@@ -95,7 +95,7 @@
           } satisfies DivAttributes)}
         >
           {#each options as option, i}
-            <Check
+            <Checkbox
               bind:checked={values[option[valueName]]}
               value={option[valueName]}
               {...option[styleName]}
@@ -105,7 +105,7 @@
               {:else}
                 {option[labelName]}
               {/if}
-            </Check>
+            </Checkbox>
           {/each}
         </div>
       </div>

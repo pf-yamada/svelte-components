@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { css } from "$lib/css/css.svelte";
+  import { css } from "$lib/kuro-comp/css.svelte";
 </script>
 
 <div style="padding:8px">
@@ -35,6 +35,11 @@
       <li><a href="?id=code">Code</a></li>
       <li><a href="?id=icon">Icon</a></li>
       <li><a href="?id=tree">Tree</a></li>
+      <li><a href="?id=popup">Popup</a></li>
+      <li><a href="?id=menuitem">MenuItem</a></li>
+      <li><a href="?id=dialog">Dialog</a></li>
+      <li><a href="?id=left_menu_layout">LeftMenuLayout</a></li>
+      <li><a href="?id=right_menu_layout">RightMenuLayout</a></li>
     </ul>
   </div>
 </div>

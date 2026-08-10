@@ -8,7 +8,7 @@
   } from "../css.svelte";
 
   let {
-    onclick,
+    onClick,
     value = $bindable(),
     options,
     "label-name": labelName = "label",
@@ -21,7 +21,7 @@
     "-deactive-style": deactiveStyle,
     ...rest
   }: {
-    onclick?: (v: any, w: any) => void;
+    onClick?: (v: any, w: any) => void;
     value?: any;
     options: any[];
     "label-name"?: string;
@@ -36,7 +36,7 @@
 
   const click = (v: any, w: any) => {
     value = v;
-    onclick?.(v, w);
+    onClick?.(v, w);
   };
 
   // デフォルトスタイル
@@ -92,7 +92,7 @@
         {...button}
         {...start}
         {...selected}
-        onclick={() => click(option[valueName], option)}
+        onClick={() => click(option[valueName], option)}
       >
         {label}
       </Button>
@@ -102,7 +102,7 @@
         {...button}
         {...end}
         {...selected}
-        onclick={() => click(option[valueName], option)}
+        onClick={() => click(option[valueName], option)}
       >
         {label}
       </Button>
@@ -111,7 +111,7 @@
         {...base}
         {...button}
         {...selected}
-        onclick={() => click(option[valueName], option)}
+        onClick={() => click(option[valueName], option)}
       >
         {label}
       </Button>

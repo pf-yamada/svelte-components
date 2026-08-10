@@ -7,39 +7,48 @@
     SwitchSample,
     RadioSample,
     IconSample,
-    CheckSample,
+    CheckboxSample,
     SelectSample,
     InputSample,
     CodeSample,
     MultipleSample,
     TreeSample,
-  } from "$lib/css/css.svelte";
+    PopupSample,
+    MenuItemSample,
+    DialogSample,
+    LeftMenuLayoutSample,
+    RightMenuLayoutSample,
+  } from "$lib/kuro-comp/css.svelte";
   const id = $derived(page.url.searchParams.get("id"));
+
+  const samples = {
+    button: ButtonSample,
+    combo: ComboSample,
+    switch: SwitchSample,
+    radio: RadioSample,
+    checkbox: CheckboxSample,
+    select: SelectSample,
+    multiple: MultipleSample,
+    input: InputSample,
+    code: CodeSample,
+    icon: IconSample,
+    tree: TreeSample,
+    popup: PopupSample,
+    menuitem: MenuItemSample,
+    dialog: DialogSample,
+    left_menu_layout: LeftMenuLayoutSample,
+    right_menu_layout: RightMenuLayoutSample,
+  };
 </script>
 
-ID:{id}
-<div {...at({ "-mgn": "16px" })}>
-  {#if id === "button"}
-    <ButtonSample />
-  {:else if id === "combo"}
-    <ComboSample />
-  {:else if id === "switch"}
-    <SwitchSample />
-  {:else if id === "radio"}
-    <RadioSample />
-  {:else if id === "check"}
-    <CheckSample />
-  {:else if id === "select"}
-    <SelectSample />
-  {:else if id === "multiple"}
-    <MultipleSample />
-  {:else if id === "input"}
-    <InputSample />
-  {:else if id === "code"}
-    <CodeSample />
-  {:else if id === "icon"}
-    <IconSample />
-  {:else if id === "tree"}
-    <TreeSample />
+ID:{id}<br />
+{#if id}
+  {@const Component = samples[id as keyof typeof samples]}
+  {#if id.includes("layout")}
+    <Component />
+  {:else}
+    <div style:overflow="auto" style:min-width="0" style:min-height="0">
+      <Component />
+    </div>
   {/if}
-</div>
+{/if}

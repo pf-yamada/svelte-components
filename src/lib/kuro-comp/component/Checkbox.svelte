@@ -14,15 +14,15 @@
     gap,
     "-box-size": boxSize,
     "-box-color": boxColor,
-    onchange,
+    onChange,
     ...rest
   }: {
-    checked?: any;
+    checked: boolean;
     children?: Snippet<[]>;
     gap?: string;
     "-box-size"?: string;
     "-box-color"?: Color;
-    onchange?: (v: boolean) => void;
+    onChange?: (v: boolean) => void;
   } & InputAttributes = $props();
 
   const attr = $derived({
@@ -40,7 +40,7 @@
   <input
     type="checkbox"
     bind:checked
-    onchange={(e: Event) => onchange?.(checked)}
+    onchange={(e: Event) => onChange?.(checked)}
   />
   <span class="box">
     <span class:checked class="check">

@@ -5,7 +5,7 @@
     Popup,
     Dialog,
     Button,
-    Item,
+    MenuItem,
     MoreVertIcon,
     type DropPosition,
     type TreeNode,
@@ -168,8 +168,8 @@
   ポップアップメニュー
 -->
 <Popup bind:this={popup} -dsp="flex" -flx-d="column" -pad="8px">
-  <Item onClick={() => popup.exit("delete")}>Delete</Item>
-  <Item onClick={() => popup.exit("create")}>Create</Item>
+  <MenuItem onClick={() => popup.exit("delete")}>Delete</MenuItem>
+  <MenuItem onClick={() => popup.exit("create")}>Create</MenuItem>
 </Popup>
 
 <!--
