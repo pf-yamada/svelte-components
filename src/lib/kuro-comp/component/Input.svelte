@@ -1,18 +1,16 @@
 <script lang="ts">
   import { at, css, type InputAttributes } from "../css.svelte";
 
-  type LocalEvent = Event & { currentTarget: EventTarget & HTMLInputElement };
-
   let {
     value = $bindable(),
-    onvalue,
+    onValue,
     ...rest
   }: {
     value: string | null;
-    onvalue?: (
+    onValue?: (
+      e?: Event,
       value?: string | null,
       validator?: (value: string | null) => boolean,
-      e?: LocalEvent,
     ) => void;
   } & InputAttributes = $props();
 
@@ -29,6 +27,6 @@
 <input
   bind:this={input}
   bind:value
-  oninput={(e: LocalEvent) => onvalue?.(value, input.checkValidity, e)}
+  oninput={(e: Event) => onValue?.(e, value, input.checkValidity)}
   {...at(attr, rest)}
 />

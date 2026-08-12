@@ -1,3 +1,5 @@
+import type { Value } from "../css.svelte.ts";
+
 /**
  * ツリーのノード（これをもとにツリーが描画される）
  */
@@ -6,6 +8,8 @@ export type TreeNode = {
   label: string;
   level?: number;
   children?: TreeNode[];
+  type?: string;
+  data?: Value;
 };
 
 /**
@@ -48,6 +52,6 @@ export type TreeContext = {
  */
 export type BindTree = {
   remove: (node: TreeNode) => void;
-  addChild: (node: TreeNode, label: string) => void;
-  addAfter: (node: TreeNode, label: string) => void;
+  addChild: (node: TreeNode, label: string) => TreeNode;
+  addAfter: (node: TreeNode, label: string) => TreeNode | undefined;
 };

@@ -19,8 +19,8 @@
     ...rest
   }: {
     root: TreeNode[];
-    value: TreeNode;
-    selectedNodes: TreeNode[];
+    value?: TreeNode;
+    selectedNodes?: TreeNode[];
     item?: Snippet<[TreeNode, DropPosition]>;
     onMoveChallenge?: (target: TreeNode, sources: TreeNode[]) => boolean;
     onSelect?: (target: TreeNode) => void;

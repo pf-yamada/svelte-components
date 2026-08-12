@@ -241,22 +241,23 @@ export { default as CheckIcon } from "./icon/CheckIcon.svelte";
 export { default as MoreVertIcon } from "./icon/MoreVertIcon.svelte";
 
 // sample
-export { default as ButtonSample } from "./sample/ButtonSample.svelte";
-export { default as ComboSample } from "./sample/ComboSample.svelte";
-export { default as SwitchSample } from "./sample/SwitchSample.svelte";
-export { default as RadioSample } from "./sample/RadioSample.svelte";
-export { default as CheckboxSample } from "./sample/CheckboxSample.svelte";
-export { default as IconSample } from "./sample/IconSample.svelte";
-export { default as SelectSample } from "./sample/SelectSample.svelte";
-export { default as MultipleSample } from "./sample/MultipleSample.svelte";
-export { default as InputSample } from "./sample/InputSample.svelte";
-export { default as CodeSample } from "./sample/CodeSample.svelte";
-export { default as TreeSample } from "./sample/TreeSample.svelte";
-export { default as PopupSample } from "./sample/PopupSample.svelte";
-export { default as MenuItemSample } from "./sample/MenuItemSample.svelte";
-export { default as DialogSample } from "./sample/DialogSample.svelte";
-export { default as LeftMenuLayoutSample } from "./sample/LeftMenuLayoutSample.svelte";
-export { default as RightMenuLayoutSample } from "./sample/RightMenuLayoutSample.svelte";
+export { default as Demo } from "./demo/@Demo.svelte";
+export { default as ButtonDemo } from "./demo/ButtonDemo.svelte";
+export { default as ComboDemo } from "./demo/ComboDemo.svelte";
+export { default as SwitchDemo } from "./demo/SwitchDemo.svelte";
+export { default as RadioDemo } from "./demo/RadioDemo.svelte";
+export { default as CheckboxDemo } from "./demo/CheckboxDemo.svelte";
+export { default as IconDemo } from "./demo/IconDemo.svelte";
+export { default as SelectDemo } from "./demo/SelectDemo.svelte";
+export { default as MultipleDemo } from "./demo/MultipleDemo.svelte";
+export { default as InputDemo } from "./demo/InputDemo.svelte";
+export { default as CodeDemo } from "./demo/CodeDemo.svelte";
+export { default as TreeDemo } from "./demo/TreeDemo.svelte";
+export { default as PopupDemo } from "./demo/PopupDemo.svelte";
+export { default as MenuItemDemo } from "./demo/MenuItemDemo.svelte";
+export { default as DialogDemo } from "./demo/DialogDemo.svelte";
+export { default as LeftMenuLayoutDemo } from "./demo/LeftMenuLayoutDemo.svelte";
+export { default as RightMenuLayoutDemo } from "./demo/RightMenuLayoutDemo.svelte";
 
 // type
 export type { Color };

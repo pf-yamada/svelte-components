@@ -3,8 +3,7 @@
 
   import { type Snippet } from "svelte";
   import { css, at, LeftMenuLayout } from "$lib/kuro-comp/css.svelte";
-  import LeftMenu from "./LeftMenu.svelte";
-  import Header from "./Header.svelte";
+  import MainMenu from "$lib/app/MainMenu.svelte";
 
   let { children }: { children: Snippet<[]> } = $props();
 
@@ -13,8 +12,8 @@
   $effect(() => {
     const root = document.documentElement;
     root.style.colorScheme = css.scheme;
-    root.style.setProperty("--bg-color", css.bgc);
-    root.style.setProperty("--text-color", css.fgc);
+    root.style.setProperty("--bgc", css.bgc);
+    root.style.setProperty("--fgc", css.fgc);
     root.style.setProperty("--link-color", css[css.scheme].linkColor);
     root.style.setProperty("--link-hover", css[css.scheme].linkHover);
     root.style.setProperty("--link-visited", css[css.scheme].linkVisited);
@@ -29,15 +28,22 @@
 >
   <LeftMenuLayout bind:open>
     {#snippet header()}
-      <Header
-        bind:open
-        -pad="4px"
-        -bgc="rgba(128,128,128,0.7)"
-        -w="100%"
-        -dsp="block"
-        -backdrop-filter="blur(4px)"
-        -zi="9999"
-      />
+      <div
+        style:padding="4px"
+        style:background-color="rgba(128,128,128,0.7)"
+        style:width="100%"
+        style:display="block"
+        style:backdrop-filter="blur(4px)"
+        style:z-index="9999"
+      >
+        <button
+          class="toggle"
+          onclick={() => (open = !open)}
+          {...at({ "-box-shadow": css.boxShadow })}
+        >
+          ☰
+        </button>
+      </div>
     {/snippet}
 
     {#snippet footer()}
@@ -53,11 +59,19 @@
     {/snippet}
 
     {#snippet sidebar()}
-      <div {...at({ h: "100%" })}>
-        <LeftMenu />
-      </div>
+      <!-- <div {...at({ h: "100%" })}>menu</div> -->
+      <MainMenu />
     {/snippet}
-    <!-- そのままタグ装飾せずに出さないとflexが壊れる -->
+    <!--
+      そのままタグ装飾せずに出さないとflexが引き継がれない。
+      または、それを意識したタグでくくらないといけない。
+    -->
     {@render children?.()}
   </LeftMenuLayout>
 </div>
+
+<style>
+  .toggle {
+    z-index: 1100;
+  }
+</style>

@@ -21,7 +21,7 @@
   {#if true}
     {@const src = `
 <!--
-  ボタンからPopupを起動するサンプル
+  ボタンからDialogを起動するサンプル
 -->
 {JSON.stringify(value)}
 

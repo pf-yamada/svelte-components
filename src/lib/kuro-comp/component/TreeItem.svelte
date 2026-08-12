@@ -110,9 +110,9 @@
         style:background="transparent"
       >
         {#if open}
-          <ArrowDropDownIcon />
+          <ArrowDropDownIcon -width="24px" />
         {:else}
-          <ArrowDropDownIcon -transform="rotate(-90deg)" />
+          <ArrowDropDownIcon -width="24px" -transform="rotate(-90deg)" />
         {/if}
       </button>
     {:else}
@@ -126,7 +126,6 @@
         ・
       </div>
     {/if}
-
     {#if item}
       {@render item(node, dropPosition)}
     {:else}
@@ -161,7 +160,6 @@
   .row {
     display: flex;
     align-items: center;
-    gap: 4px;
     min-height: 24px;
   }
 
