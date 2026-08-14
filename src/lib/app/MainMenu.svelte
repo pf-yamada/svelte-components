@@ -3,3 +3,5 @@
 </script>
 
 <TreeEditor />
+
+・<a href="/demo">Demo</a>

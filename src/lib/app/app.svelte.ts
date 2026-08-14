@@ -1,8 +1,10 @@
-export { type TreeNode } from "../kuro-comp/css.svelte.ts";
 export { default as Text } from "./component/Text.svelte";
 export { default as Div } from "./component/Div.svelte";
 export { default as TreeComponent } from "./TreeComponent.svelte";
 export { default as TreeEditor } from "./TreeEditor.svelte";
+export { default as TextProperty } from "./property/TextProperty.svelte";
+export { default as DivProperty } from "./property/DivProperty.svelte";
+import { type DivData, divData } from "./lib/Div.ts";
 
 export const project = $state({
   tree: [
@@ -66,17 +68,6 @@ export const project = $state({
 });
 
 export type TextData = {
-  text: string;
+  text?: string;
 };
-
-export type DivData = {
-  margin?: string;
-  padding?: string;
-  border?: string;
-  background?: string;
-  display?: string;
-  flexDirection?: string;
-  alignItems?: string;
-  justifyContent?: string;
-  borderRadius?: string;
-};
+export { type DivData, divData };

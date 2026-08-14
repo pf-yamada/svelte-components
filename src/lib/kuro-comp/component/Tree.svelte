@@ -182,6 +182,10 @@
     }
   }
 
+  export function getParent(node: TreeNode) {
+    return findParent(root, node);
+  }
+
   /**
    * 複数のノードを指定されたIDのノードのpositionに移動する。
    * positionには"before" | "inside" | "after"があるそれぞれ、

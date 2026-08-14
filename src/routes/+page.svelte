@@ -6,7 +6,5 @@
 <div style:overflow="auto">
   <TreeComponent tree={project.tree} />
 
-  <pre>
-    {JSON.stringify(project.tree, null, 4)}
-  </pre>
+  <pre>{JSON.stringify(project.tree, null, 4)}</pre>
 </div>

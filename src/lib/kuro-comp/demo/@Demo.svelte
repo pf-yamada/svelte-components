@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { page } from "$app/state";
   import {
     at,
     css,
@@ -12,11 +11,12 @@
     SelectDemo,
     InputDemo,
     CodeDemo,
-    MultipleDemo,
+    SelectMultipleDemo,
     TreeDemo,
     PopupDemo,
     MenuItemDemo,
     DialogDemo,
+    TextAreaDemo,
     LeftMenuLayoutDemo,
     RightMenuLayoutDemo,
   } from "$lib/kuro-comp/css.svelte";
@@ -30,7 +30,7 @@
     radio: RadioDemo,
     checkbox: CheckboxDemo,
     select: SelectDemo,
-    multiple: MultipleDemo,
+    select_multiple: SelectMultipleDemo,
     input: InputDemo,
     code: CodeDemo,
     icon: IconDemo,
@@ -38,6 +38,7 @@
     popup: PopupDemo,
     menuitem: MenuItemDemo,
     dialog: DialogDemo,
+    textarea: TextAreaDemo,
     left_menu_layout: LeftMenuLayoutDemo,
     right_menu_layout: RightMenuLayoutDemo,
   };
@@ -87,7 +88,12 @@
     {#if id.includes("layout")}
       <Component />
     {:else}
-      <div style:overflow="auto" style:min-width="0" style:min-height="0">
+      <div
+        style:overflow="auto"
+        style:width="100%"
+        style:min-width="0"
+        style:min-height="0"
+      >
         <Component />
       </div>
     {/if}

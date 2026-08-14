@@ -6,27 +6,24 @@
     onValue,
     ...rest
   }: {
-    value: string | null;
+    value?: string;
     onValue?: (
       e?: Event,
-      value?: string | null,
-      validator?: (value: string | null) => boolean,
+      value?: string,
+      validator?: (value: string) => boolean,
     ) => void;
   } & InputAttributes = $props();
 
   let input: HTMLInputElement;
-
-  let attr = $derived({
-    "-rad": "9999px",
-    "-bdr": css.bdr,
-    "-sha": css.boxShadow,
-    "-pad": "6px 12px",
-  });
 </script>
 
 <input
   bind:this={input}
   bind:value
+  style:border-radius="9999px"
+  style:border={css.bdr}
+  style:box-shadow={css.boxShadow}
+  style:padding="6px 12px"
   oninput={(e: Event) => onValue?.(e, value, input.checkValidity)}
-  {...at(attr, rest)}
+  {...at(rest)}
 />

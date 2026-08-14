@@ -10,6 +10,31 @@ import {
 import { contrast } from "./lib/Colors.ts";
 import { type Color, type Css } from "./lib/Types.ts";
 import { type CssAliases, cssAliases } from "./lib/Aliases.ts";
+
+export {
+  cssGlobal,
+  alignContent,
+  alignItems,
+  alignSelf,
+  backgroundRepeat,
+  borderStyle,
+  boxSizing,
+  cursor,
+  display,
+  flexDirection,
+  flexWrap,
+  justifyContent,
+  justifySelf,
+  overflow,
+  pointerEvents,
+  position,
+  textAlign,
+  textOverflow,
+  whiteSpace,
+  wordBreak,
+  visibility,
+} from "./lib/Values.ts";
+
 // /**
 //  * svelteコンポーネントに指定できるCSS属性の型
 //  */
@@ -214,20 +239,50 @@ export function generateId(length: number = 12): string {
   return result.join("");
 }
 
-// // component
+export function clone(object: Value) {
+  return JSON.parse(JSON.stringify(object ?? null));
+}
+
+export function removeEmpty(obj: Value): Value {
+  if (Array.isArray(obj)) {
+    return obj.map(removeEmpty);
+  }
+
+  if (obj !== null && typeof obj === "object") {
+    const result: { [key: string | number | symbol]: Value } = {};
+
+    for (const key of Reflect.ownKeys(obj)) {
+      const value = obj[key];
+
+      if (value === undefined || value === null || value === "") {
+        continue;
+      }
+
+      result[key] = removeEmpty(value);
+    }
+
+    return result;
+  }
+
+  return obj;
+}
+
+// component
 export { default as Button } from "./component/Button.svelte";
 export { default as Combo } from "./component/Combo.svelte";
 export { default as Switch } from "./component/Switch.svelte";
 export { default as Radio } from "./component/Radio.svelte";
 export { default as Checkbox } from "./component/Checkbox.svelte";
 export { default as Select } from "./component/Select.svelte";
-export { default as Multiple } from "./component/Multiple.svelte";
+export { default as SelectMultiple } from "./component/SelectMultiple.svelte";
+export { default as SelectEditable } from "./component/SelectEditable.svelte";
 export { default as Input } from "./component/Input.svelte";
 export { default as Code } from "./component/Code.svelte";
 export { default as Tree } from "./component/Tree.svelte";
 export { default as Popup } from "./component/Popup.svelte";
 export { default as Dialog } from "./component/Dialog.svelte";
 export { default as MenuItem } from "./component/MenuItem.svelte";
+export { default as TextArea } from "./component/TextArea.svelte";
 
 // layout
 export { default as LeftMenuLayout } from "./layout/LeftMenuLayout.svelte";
@@ -249,13 +304,14 @@ export { default as RadioDemo } from "./demo/RadioDemo.svelte";
 export { default as CheckboxDemo } from "./demo/CheckboxDemo.svelte";
 export { default as IconDemo } from "./demo/IconDemo.svelte";
 export { default as SelectDemo } from "./demo/SelectDemo.svelte";
-export { default as MultipleDemo } from "./demo/MultipleDemo.svelte";
+export { default as SelectMultipleDemo } from "./demo/SelectMultipleDemo.svelte";
 export { default as InputDemo } from "./demo/InputDemo.svelte";
 export { default as CodeDemo } from "./demo/CodeDemo.svelte";
 export { default as TreeDemo } from "./demo/TreeDemo.svelte";
 export { default as PopupDemo } from "./demo/PopupDemo.svelte";
 export { default as MenuItemDemo } from "./demo/MenuItemDemo.svelte";
 export { default as DialogDemo } from "./demo/DialogDemo.svelte";
+export { default as TextAreaDemo } from "./demo/TextAreaDemo.svelte";
 export { default as LeftMenuLayoutDemo } from "./demo/LeftMenuLayoutDemo.svelte";
 export { default as RightMenuLayoutDemo } from "./demo/RightMenuLayoutDemo.svelte";
 

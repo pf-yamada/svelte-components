@@ -9,6 +9,7 @@
     MoreVertIcon,
     Input,
     Select,
+    TextArea,
     type TreeNode,
     type Value,
     type BindTree,
@@ -17,7 +18,12 @@
     type DropPosition,
   } from "$lib/kuro-comp/css.svelte";
 
-  import { project } from "$lib/app/app.svelte";
+  import {
+    project,
+    type TextData,
+    TextProperty,
+    DivProperty,
+  } from "$lib/app/app.svelte";
 
   let tree = $state<BindTree>(undefined!);
   let popup = $state<BindPopup>(undefined!);
@@ -25,6 +31,12 @@
 
   let dialogMode = $state<"delete" | "create" | "property">(undefined!);
   let targetNode = $state<TreeNode>(undefined!);
+
+  /**
+   * ダイアログ用変数
+   */
+  let label = $state("");
+  let nodeType = $state("Text");
 
   /**
    * メニューがクリックされたときの処理
@@ -35,11 +47,10 @@
   async function onMenu(e: MouseEvent, node: TreeNode) {
     targetNode = node;
     const action = await popup.show(e.clientX, e.clientY);
-    console.log(action);
     switch (action) {
       case "delete": {
         dialogMode = "delete";
-        const status = await dialog.show();
+        const status = await dialog.showSync();
         if (status == "ok") {
           tree.remove(node);
         }
@@ -48,7 +59,7 @@
       case "create": {
         dialogMode = "create";
         type ResultType = { status: Value; label: string };
-        const { status, label } = (await dialog.show()) as ResultType;
+        const { status, label } = (await dialog.showSync()) as ResultType;
         switch (status) {
           case "addChild": {
             const newNode = tree.addChild(node, label);
@@ -66,7 +77,14 @@
       }
       case "property": {
         dialogMode = "property";
-        await dialog.show();
+        switch (targetNode.type) {
+          case "Text":
+            textProperty = true;
+            break;
+          case "Div":
+            divProperty = true;
+            break;
+        }
       }
     }
   }
@@ -81,11 +99,14 @@
     return true;
   }
 
-  /**
-   * ダイアログ用変数
-   */
-  let label = $state("");
-  let nodeType = $state("Text");
+  let parentNode = $derived.by(() => {
+    if (!tree) return undefined;
+    if (!targetNode) return undefined;
+    return tree.getParent(targetNode);
+  });
+
+  let textProperty = $state(false);
+  let divProperty = $state(false);
 </script>
 
 <!--
@@ -120,6 +141,8 @@
   {/if}
 </Popup>
 
+<TextProperty bind:open={textProperty} bind:node={targetNode} />
+<DivProperty bind:open={divProperty} bind:node={targetNode} {parentNode} />
 <!--
   ダイアログ
 -->
@@ -191,24 +214,22 @@
       >
     </div>
   {:else if dialogMode === "property"}
-    {#if targetNode.type === "Text"}
-      テキストエリアがそろそろいるな。
-    {:else if targetNode.type === "Div"}
+    {#if targetNode.type === "Div"}
       CSSの編集ですねここは。
+      <div style:display="flex" style:justify-content="space-evenly">
+        <Button
+          onclick={() => {
+            dialog.exit({ status: "addAfter" });
+          }}>addAfter</Button
+        >
+        <Button
+          -background-color={css.fgc}
+          onclick={() => {
+            dialog.exit({ status: "cancel", label: "dummy" });
+          }}>取消</Button
+        >
+      </div>
     {/if}
-    <div style:display="flex" style:justify-content="space-evenly">
-      <Button
-        onclick={() => {
-          dialog.exit({ status: "addAfter", label });
-        }}>addAfter</Button
-      >
-      <Button
-        -background-color={css.fgc}
-        onclick={() => {
-          dialog.exit({ status: "cancel", label: "dummy" });
-        }}>取消</Button
-      >
-    </div>
   {/if}
 </Dialog>
 

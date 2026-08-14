@@ -9,7 +9,7 @@ export type TreeNode = {
   level?: number;
   children?: TreeNode[];
   type?: string;
-  data?: Value;
+  data?: { [key: string]: Value };
 };
 
 /**
@@ -54,4 +54,5 @@ export type BindTree = {
   remove: (node: TreeNode) => void;
   addChild: (node: TreeNode, label: string) => TreeNode;
   addAfter: (node: TreeNode, label: string) => TreeNode | undefined;
+  getParent: (node: TreeNode) => TreeNode | undefined;
 };

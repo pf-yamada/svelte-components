@@ -5,14 +5,16 @@
   const STATUS_OPEN = "==== OPEN ====";
 
   let {
+    status,
     caption,
+    onClose,
     children,
   }: {
+    status?: Value;
     caption?: string | Snippet<[]>;
+    onClose?: (e: MouseEvent) => void;
     children?: Snippet<[]>;
   } = $props();
-
-  let status = $state<Value>(undefined);
 
   let x = $state(100);
   let y = $state(100);
@@ -65,8 +67,9 @@
     });
   });
 
-  function close() {
+  function close(e: MouseEvent) {
     status = "cancel";
+    onClose?.(e);
   }
 
   /**
@@ -75,14 +78,17 @@
   let resolver: ((state: Value) => void) | undefined;
   export function show() {
     status = STATUS_OPEN;
+  }
+
+  export function showSync() {
     return new Promise<Value>((resolve) => {
       resolver = resolve;
     });
   }
 
   $effect(() => {
-    if (status !== STATUS_OPEN) {
-      resolver?.(status);
+    if (status !== STATUS_OPEN && resolver) {
+      resolver(status);
       resolver = undefined;
     }
   });
@@ -102,7 +108,7 @@
     class="backdrop"
     onclick={(e) => {
       if (e.target === e.currentTarget) {
-        close();
+        close(e);
       }
     }}
   >

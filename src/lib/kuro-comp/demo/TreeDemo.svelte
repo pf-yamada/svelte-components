@@ -93,7 +93,7 @@
     switch (action) {
       case "delete": {
         dialogMode = "delete";
-        const status = await dialog.show();
+        const status = await dialog.showSync();
         if (status == "ok") {
           tree.remove(node);
         }
@@ -102,7 +102,7 @@
       case "create": {
         dialogMode = "create";
         type ResultType = { status: Value; label: string };
-        const { status, label } = (await dialog.show()) as ResultType;
+        const { status, label } = (await dialog.showSync()) as ResultType;
         switch (status) {
           case "addChild":
             tree.addChild(node, label);

@@ -1,310 +1,68 @@
+import { presetColors } from "./Colors.ts";
+export type PresetColors = keyof typeof presetColors;
+
+import {
+  cssGlobal,
+  alignContent,
+  alignItems,
+  alignSelf,
+  backgroundRepeat,
+  borderStyle,
+  boxSizing,
+  cursor,
+  display,
+  flexDirection,
+  flexWrap,
+  justifyContent,
+  justifySelf,
+  overflow,
+  pointerEvents,
+  position,
+  textAlign,
+  textOverflow,
+  whiteSpace,
+  wordBreak,
+  visibility,
+} from "./Values.ts";
+
+/**
+ * 値の型
+ */
+export type CssGlobal = (typeof cssGlobal)[number];
+export type AlignContent = (typeof alignContent)[number] | CssGlobal;
+export type AlignItems = (typeof alignItems)[number] | CssGlobal;
+export type AlignSelf = (typeof alignSelf)[number] | CssGlobal;
+export type BackgroundRepeat = (typeof backgroundRepeat)[number] | CssGlobal;
+export type BorderStyle = (typeof borderStyle)[number] | CssGlobal;
+export type BoxSizing = (typeof boxSizing)[number] | CssGlobal;
 export type Color =
   | `#${string}`
   | `rgb(${string})`
   | `rgba(${string})`
   | `hsl(${string})`
   | `hsla(${string})`
-  | "aliceblue"
-  | "antiquewhite"
-  | "aqua"
-  | "aquamarine"
-  | "azure"
-  | "beige"
-  | "bisque"
-  | "black"
-  | "blanchedalmond"
-  | "blue"
-  | "blueviolet"
-  | "brown"
-  | "burlywood"
-  | "cadetblue"
-  | "chartreuse"
-  | "chocolate"
-  | "coral"
-  | "cornflowerblue"
-  | "cornsilk"
-  | "crimson"
-  | "cyan"
-  | "darkblue"
-  | "darkcyan"
-  | "darkgoldenrod"
-  | "darkgray"
-  | "darkgreen"
-  | "darkgrey"
-  | "darkkhaki"
-  | "darkmagenta"
-  | "darkolivegreen"
-  | "darkorange"
-  | "darkorchid"
-  | "darkred"
-  | "darksalmon"
-  | "darkseagreen"
-  | "darkslateblue"
-  | "darkslategray"
-  | "darkslategrey"
-  | "darkturquoise"
-  | "darkviolet"
-  | "deeppink"
-  | "deepskyblue"
-  | "dimgray"
-  | "dimgrey"
-  | "dodgerblue"
-  | "firebrick"
-  | "floralwhite"
-  | "forestgreen"
-  | "fuchsia"
-  | "gainsboro"
-  | "ghostwhite"
-  | "gold"
-  | "goldenrod"
-  | "gray"
-  | "green"
-  | "greenyellow"
-  | "grey"
-  | "honeydew"
-  | "hotpink"
-  | "indianred"
-  | "indigo"
-  | "ivory"
-  | "khaki"
-  | "lavender"
-  | "lavenderblush"
-  | "lawngreen"
-  | "lemonchiffon"
-  | "lightblue"
-  | "lightcoral"
-  | "lightcyan"
-  | "lightgoldenrodyellow"
-  | "lightgray"
-  | "lightgreen"
-  | "lightgrey"
-  | "lightpink"
-  | "lightsalmon"
-  | "lightseagreen"
-  | "lightskyblue"
-  | "lightslategray"
-  | "lightslategrey"
-  | "lightsteelblue"
-  | "lightyellow"
-  | "lime"
-  | "limegreen"
-  | "linen"
-  | "magenta"
-  | "maroon"
-  | "mediumaquamarine"
-  | "mediumblue"
-  | "mediumorchid"
-  | "mediumpurple"
-  | "mediumseagreen"
-  | "mediumslateblue"
-  | "mediumspringgreen"
-  | "mediumturquoise"
-  | "mediumvioletred"
-  | "midnightblue"
-  | "mintcream"
-  | "mistyrose"
-  | "moccasin"
-  | "navajowhite"
-  | "navy"
-  | "oldlace"
-  | "olive"
-  | "olivedrab"
-  | "orange"
-  | "orangered"
-  | "orchid"
-  | "palegoldenrod"
-  | "palegreen"
-  | "paleturquoise"
-  | "palevioletred"
-  | "papayawhip"
-  | "peachpuff"
-  | "peru"
-  | "pink"
-  | "plum"
-  | "powderblue"
-  | "purple"
-  | "rebeccapurple" // CSS Level 4で追加された特別な紫
-  | "red"
-  | "rosybrown"
-  | "royalblue"
-  | "saddlebrown"
-  | "salmon"
-  | "sandybrown"
-  | "seagreen"
-  | "seashell"
-  | "sienna"
-  | "silver"
-  | "skyblue"
-  | "slateblue"
-  | "slategray"
-  | "slategrey"
-  | "snow"
-  | "springgreen"
-  | "steelblue"
-  | "tan"
-  | "teal"
-  | "thistle"
-  | "tomato"
-  | "turquoise"
-  | "violet"
-  | "wheat"
-  | "white"
-  | "whitesmoke"
-  | "yellow"
-  | "yellowgreen"
-  // 特殊なシステムカラー値
   | "transparent"
-  | "currentcolor";
+  | "currentcolor"
+  | PresetColors
+  | CssGlobal;
+export type Cursor = (typeof cursor)[number] | CssGlobal;
+export type Display = (typeof display)[number] | CssGlobal;
+export type FlexDirection = (typeof flexDirection)[number] | CssGlobal;
+export type FlexWrap = (typeof flexWrap)[number] | CssGlobal;
+export type JustifyContent = (typeof justifyContent)[number] | CssGlobal;
+export type JustifySelf = (typeof justifySelf)[number] | CssGlobal;
+export type Overflow = (typeof overflow)[number] | CssGlobal;
+export type PointerEvents = (typeof pointerEvents)[number] | CssGlobal;
+export type Position = (typeof position)[number] | CssGlobal;
+export type TextAlign = (typeof textAlign)[number] | CssGlobal;
+export type TextOverflow = (typeof textOverflow)[number] | CssGlobal;
+export type WhiteSpace = (typeof whiteSpace)[number] | CssGlobal;
+export type WordBreak = (typeof wordBreak)[number] | CssGlobal;
+export type Visibility = (typeof visibility)[number] | CssGlobal;
 
-export type FontWeight =
-  | "normal"
-  | "bold"
-  | "bolder"
-  | "lighter"
-  | "initial"
-  | "inherit"
-  | "unset"
-  | number;
-
-export type FontSize =
-  | "xx-small"
-  | "x-small"
-  | "small"
-  | "medium"
-  | "large"
-  | "x-large"
-  | "xx-large"
-  | "xxx-large"
-  | "smaller"
-  | "larger"
-  | (string & {});
-
-export type Width =
-  | "auto"
-  | "fit-content"
-  | "max-content"
-  | "min-content"
-  | "inherit"
-  | "initial"
-  | "revert"
-  | "unset"
-  | (string & {});
-
-export type Height =
-  | "auto"
-  | "fit-content"
-  | "max-content"
-  | "min-content"
-  | "inherit"
-  | "initial"
-  | "revert"
-  | "unset"
-  | (string & {});
-
-export type Pos =
-  "auto" | "inherit" | "initial" | "revert" | "unset" | number | (string & {});
-
-export type Display =
-  | "block"
-  | "inline"
-  | "inline-block"
-  | "flex"
-  | "inline-flex"
-  | "grid"
-  | "inline-grid"
-  | "none"
-  | "contents"
-  | "table"
-  | "table-cell"
-  | "table-row"
-  | "inherit"
-  | "initial"
-  | "revert"
-  | "unset";
-
-export type Position =
-  | "static"
-  | "relative"
-  | "absolute"
-  | "fixed"
-  | "sticky"
-  | "inherit"
-  | "initial"
-  | "revert"
-  | "unset";
-
-export type ZIndex =
-  "auto" | "inherit" | "initial" | "revert" | "unset" | number | (string & {});
-
-export type Cursor =
-  | "auto"
-  | "default"
-  | "none"
-  | "context-menu"
-  | "help"
-  | "pointer"
-  | "progress"
-  | "wait"
-  | "cell"
-  | "crosshair"
-  | "text"
-  | "vertical-text"
-  | "alias"
-  | "copy"
-  | "move"
-  | "no-drop"
-  | "not-allowed"
-  | "grab"
-  | "grabbing"
-  | "all-scroll"
-  | "col-resize"
-  | "row-resize"
-  | "n-resize"
-  | "e-resize"
-  | "s-resize"
-  | "w-resize"
-  | "ne-resize"
-  | "nw-resize"
-  | "se-resize"
-  | "sw-resize"
-  | "ew-resize"
-  | "ns-resize"
-  | "nesw-resize"
-  | "nwse-resize"
-  | "zoom-in"
-  | "zoom-out"
-  | "inherit"
-  | "initial"
-  | "revert"
-  | "unset"
-  | (string & {});
-
-export type Overflow =
-  | "visible"
-  | "hidden"
-  | "clip"
-  | "scroll"
-  | "auto"
-  | "inherit"
-  | "initial"
-  | "revert"
-  | "unset"
-  | (string & {});
-
-export type FlexDirection = "row" | "row-reverse" | "column" | "column-reverse";
-
-export type BorderStyle =
-  | "none"
-  | "hidden"
-  | "solid"
-  | "dotted"
-  | "dashed"
-  | "double"
-  | "groove"
-  | "ridge"
-  | "inset"
-  | "outset";
-
+/**
+ * CSSの型（ほぼ網羅してると思われる）
+ */
 export type Css = {
   // accent
   "-accent-color"?: string;
@@ -449,7 +207,7 @@ export type Css = {
   "-border-width"?: string;
 
   // bottom
-  "-bottom"?: Pos;
+  "-bottom"?: string;
 
   // box
   "-box-decoration-break"?: string;
@@ -591,7 +349,7 @@ export type Css = {
   "-font-language-override"?: string;
   "-font-optical-sizing"?: string;
   "-font-palette"?: string;
-  "-font-size"?: FontSize;
+  "-font-size"?: string;
   "-font-size-adjust"?: string;
   // "-font-smooth"?: string; // 非標準
   "-font-stretch"?: string;
@@ -609,7 +367,7 @@ export type Css = {
   "-font-variant-numeric"?: string;
   "-font-variant-position"?: string;
   "-font-variation-settings"?: string;
-  "-font-weight"?: FontWeight;
+  "-font-weight"?: string;
   "-font-width"?: string;
 
   // flexbox
@@ -656,7 +414,7 @@ export type Css = {
   "-hanging-punctuation"?: string;
 
   // height
-  "-height"?: Height;
+  "-height"?: string;
 
   // hyphens
   "-hyphens"?: string;
@@ -696,7 +454,7 @@ export type Css = {
   "-leading-trim"?: string;
 
   // left
-  "-left"?: Pos;
+  "-left"?: string;
 
   // letter
   "-letter-spacing"?: string;
@@ -770,19 +528,19 @@ export type Css = {
 
   // min
   "-min-block-size"?: string;
-  "-min-height"?: Height;
+  "-min-height"?: string;
   "-min-inline-size"?: string;
-  "-min-width"?: Width;
+  "-min-width"?: string;
 
   // mix
   "-mix-blend-mode"?: string;
 
   // max
   "-max-block-size"?: string;
-  "-max-height"?: Height;
+  "-max-height"?: string;
   "-max-inline-size"?: string;
   "-max-lines"?: string;
-  "-max-width"?: Width;
+  "-max-width"?: string;
 
   // nav
   "-nav-down"?: string;
@@ -921,7 +679,7 @@ export type Css = {
   "-rest-before"?: string;
 
   // right
-  "-right"?: Pos;
+  "-right"?: string;
 
   // rotate
   "-rotate"?: string;
@@ -1059,7 +817,7 @@ export type Css = {
   "-timeline-scope"?: string;
 
   // top
-  "-top"?: Pos;
+  "-top"?: string;
 
   // touch
   "-touch-action"?: string;
@@ -1118,7 +876,7 @@ export type Css = {
   "-voice-volume"?: string;
 
   // width
-  "-width"?: Width;
+  "-width"?: string;
 
   // word
   "-word-break"?: string;
@@ -1151,5 +909,5 @@ export type Css = {
   "-y"?: string;
 
   // z
-  "-z-index"?: ZIndex;
+  "-z-index"?: string;
 };

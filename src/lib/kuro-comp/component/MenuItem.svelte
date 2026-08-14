@@ -31,7 +31,7 @@
 
     border: 0;
     background: transparent;
-
+    min-height: 26px;
     text-align: left;
     cursor: pointer;
   }
